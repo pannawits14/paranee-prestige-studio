@@ -108,6 +108,36 @@ const dict = {
 };
 
 export default function App() {
+  // ------- เพิ่มส่วนนี้ไว้ก่อน return() ---------
+const gallery = Array.from({ length: 11 }, (_, i) => `/g${i + 1}.jpg`);
+const [lightbox, setLightbox] = useState({ open: false, index: 0 });
+const [touch, setTouch] = useState({ startX: 0, deltaX: 0, dragging: false });
+
+const next = () =>
+  setLightbox((s) => ({ open: true, index: (s.index + 1) % gallery.length }));
+const prev = () =>
+  setLightbox((s) => ({
+    open: true,
+    index: (s.index - 1 + gallery.length) % gallery.length,
+  }));
+
+const onTouchStart = (e) => {
+  const x = e.touches[0].clientX;
+  setTouch({ startX: x, deltaX: 0, dragging: true });
+};
+const onTouchMove = (e) => {
+  if (!touch.dragging) return;
+  const x = e.touches[0].clientX;
+  setTouch((s) => ({ ...s, deltaX: x - s.startX }));
+};
+const onTouchEnd = () => {
+  if (!touch.dragging) return;
+  const THRESHOLD = 60;
+  if (touch.deltaX > THRESHOLD) prev();
+  else if (touch.deltaX < -THRESHOLD) next();
+  setTouch({ startX: 0, deltaX: 0, dragging: false });
+};
+
   const [lang, setLang] = useState("th");
   const t = useMemo(() => dict[lang], [lang]);
 
@@ -238,20 +268,78 @@ export default function App() {
         </div>
       </section>
 
-     <section id="gallery" className="max-w-6xl mx-auto px-4 py-14 md:py-20">
+    <section id="gallery" className="max-w-6xl mx-auto px-4 py-14 md:py-20">
   <h3 className="text-2xl md:text-3xl font-bold">{t.galleryTitle}</h3>
   <div className="mt-6 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-    {Array.from({ length: 6 }, (_, idx) => idx + 1).map((i) => (
-      <img
+    {gallery.map((src, i) => (
+      <button
         key={i}
-        alt={`gallery-${i}`}
-        className="w-full h-52 object-cover rounded-2xl border"
-        src={`/g${i}.jpg`}   // ดึงไฟล์จาก public/g1.jpg ถึง g6.jpg
-      />
+        type="button"
+        onClick={() => setLightbox({ open: true, index: i })}
+        className="group relative rounded-2xl overflow-hidden border focus:outline-none"
+      >
+        <img
+          alt={`gallery-${i + 1}`}
+          className="w-full h-52 object-cover transition-transform duration-300 group-hover:scale-105"
+          src={src}
+        />
+      </button>
     ))}
   </div>
-</section>
 
+  {/* Lightbox Modal */}
+  {lightbox.open && (
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+      onClick={() => setLightbox((s) => ({ ...s, open: false }))}
+    >
+      <div
+        className="relative max-w-[90vw] max-h-[85vh] touch-pan-y"
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        <button
+          onClick={() => setLightbox((s) => ({ ...s, open: false }))}
+          className="absolute -top-3 -right-3 bg-white text-gray-900 rounded-full w-9 h-9 shadow flex items-center justify-center"
+        >
+          ✕
+        </button>
+
+        <button
+          onClick={prev}
+          className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-900 rounded-full w-10 h-10 shadow flex items-center justify-center"
+        >
+          ‹
+        </button>
+        <button
+          onClick={next}
+          className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-900 rounded-full w-10 h-10 shadow flex items-center justify-center"
+        >
+          ›
+        </button>
+
+        <img
+          src={gallery[lightbox.index]}
+          alt={`preview-${lightbox.index + 1}`}
+          className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg bg-black select-none"
+          draggable={false}
+          style={{
+            transform: `translateX(${touch.deltaX}px)`,
+            transition: touch.dragging ? "none" : "transform 200ms ease-out",
+          }}
+        />
+
+        <div className="absolute bottom-2 right-3 text-white/80 text-sm">
+          {lightbox.index + 1} / {gallery.length}
+        </div>
+      </div>
+    </div>
+  )}
+</section>
       <section id="reviews" className="bg-white border-y">
         <div className="max-w-6xl mx-auto px-4 py-14 md:py-20">
           <h3 className="text-2xl md:text-3xl font-bold">{t.reviewsTitle}</h3>
