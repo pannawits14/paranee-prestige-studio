@@ -238,19 +238,19 @@ export default function App() {
         </div>
       </section>
 
-      <section id="gallery" className="max-w-6xl mx-auto px-4 py-14 md:py-20">
-        <h3 className="text-2xl md:text-3xl font-bold">{t.galleryTitle}</h3>
-        <div className="mt-6 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {[1,2,3,4,5,6].map((i) => (
-            <img
-              key={i}
-              alt={`gallery-${i}`}
-              className="w-full h-52 object-cover rounded-2xl border"
-              src={"/g1.jpg","/g2.jpg","/g3.jpg","/g4.jpg","/g5.jpg","/g6.jpg"}
-            />
-          ))}
-        </div>
-      </section>
+     <section id="gallery" className="max-w-6xl mx-auto px-4 py-14 md:py-20">
+  <h3 className="text-2xl md:text-3xl font-bold">{t.galleryTitle}</h3>
+  <div className="mt-6 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+    {Array.from({ length: 6 }, (_, idx) => idx + 1).map((i) => (
+      <img
+        key={i}
+        alt={`gallery-${i}`}
+        className="w-full h-52 object-cover rounded-2xl border"
+        src={`/g${i}.jpg`}   // ดึงไฟล์จาก public/g1.jpg ถึง g6.jpg
+      />
+    ))}
+  </div>
+</section>
 
       <section id="reviews" className="bg-white border-y">
         <div className="max-w-6xl mx-auto px-4 py-14 md:py-20">
