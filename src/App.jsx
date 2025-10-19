@@ -122,7 +122,7 @@ export default function App() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            {(["th", "en"] as const).map((code) => (
+            {(["th", "en"]).map((code) => (
               <button
                 key={code}
                 onClick={() => setLang(code)}
