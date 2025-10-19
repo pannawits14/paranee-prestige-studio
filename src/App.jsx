@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 
 const dict = {
   th: {
@@ -108,6 +108,79 @@ const dict = {
 };
 
 export default function App() {
+  // ==== Gallery data ====
+const gallery = Array.from({ length: 11 }, (_, i) => `/g${i + 1}.jpg`);
+
+// ==== Lightbox state ====
+const [lightbox, setLightbox] = useState({ open: false, index: 0 });
+
+// ==== Swipe state ====
+const [touch, setTouch] = useState({ startX: 0, deltaX: 0, dragging: false });
+
+// ==== Zoom state ====
+const [zoom, setZoom] = useState(1);
+const [pinchDist, setPinchDist] = useState(0);
+
+// ปุ่มคีย์บอร์ด
+useEffect(() => {
+  if (!lightbox.open) return;
+  const onKey = (e) => {
+    if (e.key === "Escape") setLightbox((s) => ({ ...s, open: false }));
+    if (e.key === "ArrowRight") next();
+    if (e.key === "ArrowLeft") prev();
+  };
+  window.addEventListener("keydown", onKey);
+  return () => window.removeEventListener("keydown", onKey);
+}, [lightbox.open]);
+
+const next = () =>
+  setLightbox((s) => ({ open: true, index: (s.index + 1) % gallery.length }));
+const prev = () =>
+  setLightbox((s) => ({ open: true, index: (s.index - 1 + gallery.length) % gallery.length }));
+
+// รีเซ็ตซูมทุกครั้งที่เปลี่ยนรูป/เปิด
+useEffect(() => {
+  if (lightbox.open) setZoom(1);
+}, [lightbox.index, lightbox.open]);
+
+// Touch handlers (รวม swipe + pinch)
+const onTouchStart = (e) => {
+  if (e.touches.length === 2) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    setPinchDist(Math.hypot(dx, dy));
+  } else if (e.touches.length === 1) {
+    const x = e.touches[0].clientX;
+    setTouch({ startX: x, deltaX: 0, dragging: true });
+  }
+};
+
+const onTouchMove = (e) => {
+  // กันเบราว์เซอร์ scroll/zoom เอง (สำคัญมาก)
+  e.preventDefault();
+
+  if (e.touches.length === 2) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const newDist = Math.hypot(dx, dy);
+    setZoom((z) => Math.min(Math.max(0.5, (z * newDist) / Math.max(pinchDist, 1)), 3));
+    setPinchDist(newDist);
+  } else if (touch.dragging && e.touches.length === 1) {
+    const x = e.touches[0].clientX;
+    setTouch((s) => ({ ...s, deltaX: x - s.startX }));
+  }
+};
+
+const onTouchEnd = () => {
+  if (touch.dragging) {
+    const THRESHOLD = 60;
+    if (touch.deltaX > THRESHOLD) prev();
+    else if (touch.deltaX < -THRESHOLD) next();
+  }
+  setTouch({ startX: 0, deltaX: 0, dragging: false });
+  setPinchDist(0);
+};
+
   // ==== Gallery data ====
 const gallery = Array.from({ length: 11 }, (_, i) => `/g${i + 1}.jpg`);
 
@@ -367,74 +440,74 @@ const onTouchEnd = () => {
 
   {/* Lightbox */}
   {lightbox.open && (
+  <div
+    role="dialog"
+    aria-modal="true"
+    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+    onClick={() => setLightbox((s) => ({ ...s, open: false }))} // คลิกพื้นหลังปิด
+  >
     <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-      onClick={() => setLightbox((s) => ({ ...s, open: false }))}  // คลิกพื้นหลังเพื่อปิด
+      className="relative max-w-[90vw] max-h-[85vh] touch-none select-none" // << สำคัญ: touch-none
+      onClick={(e) => e.stopPropagation()} // กันคลิกทะลุ
     >
-      <div
-        className="relative max-w-[90vw] max-h-[85vh] touch-pan-y"
-        onClick={(e) => e.stopPropagation()}  // กันคลิกทะลุ
+      {/* ปุ่มปิด */}
+      <button
+        onClick={() => setLightbox((s) => ({ ...s, open: false }))}
+        className="absolute -top-3 -right-3 bg-white text-gray-900 rounded-full w-9 h-9 shadow flex items-center justify-center"
+        aria-label="close"
+        title="ปิด (Esc)"
       >
-        {/* ปิด */}
-        <button
-          onClick={() => setLightbox((s) => ({ ...s, open: false }))}
-          className="absolute -top-3 -right-3 bg-white text-gray-900 rounded-full w-9 h-9 shadow flex items-center justify-center"
-          aria-label="close"
-          title="ปิด (Esc)"
-        >
-          ✕
-        </button>
+        ✕
+      </button>
 
-        {/* ก่อนหน้า/ถัดไป */}
-        <button
-          onClick={prev}
-          className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-900 rounded-full w-10 h-10 shadow flex items-center justify-center"
-          aria-label="previous"
-          title="ก่อนหน้า (←/ปัดขวา)"
-        >
-          ‹
-        </button>
-        <button
-          onClick={next}
-          className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-900 rounded-full w-10 h-10 shadow flex items-center justify-center"
-          aria-label="next"
-          title="ถัดไป (→/ปัดซ้าย)"
-        >
-          ›
-        </button>
+      {/* ก่อนหน้า/ถัดไป */}
+      <button
+        onClick={prev}
+        className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-900 rounded-full w-10 h-10 shadow flex items-center justify-center"
+        aria-label="previous"
+        title="ก่อนหน้า (←/ปัดขวา)"
+      >
+        ‹
+      </button>
+      <button
+        onClick={next}
+        className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-900 rounded-full w-10 h-10 shadow flex items-center justify-center"
+        aria-label="next"
+        title="ถัดไป (→/ปัดซ้าย)"
+      >
+        ›
+      </button>
 
-        {/* ภาพใหญ่ + ซูม + ปัด */}
-        <div
-          className="overflow-hidden max-h-[85vh] max-w-[90vw] flex justify-center items-center bg-black rounded-lg select-none"
-          onWheel={(e) => {
-            e.preventDefault();
-            setZoom((z) => Math.min(Math.max(0.5, z + e.deltaY * -0.001), 3));
+      {/* ภาพใหญ่ + ซูม + ปัด */}
+      <div
+        className="overflow-hidden max-h-[85vh] max-w-[90vw] flex justify-center items-center bg-black rounded-lg"
+        onWheel={(e) => {
+          e.preventDefault();
+          setZoom((z) => Math.min(Math.max(0.5, z + e.deltaY * -0.001), 3));
+        }}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        <img
+          src={gallery[lightbox.index]}
+          alt={`preview-${lightbox.index + 1}`}
+          className="object-contain transition-transform duration-200"
+          draggable={false}
+          style={{
+            transform: `scale(${zoom}) translateX(${touch.deltaX / Math.max(zoom, 1)}px)`,
+            transition: touch.dragging ? "none" : "transform 200ms ease-out",
           }}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-        >
-          <img
-            src={gallery[lightbox.index]}
-            alt={`preview-${lightbox.index + 1}`}
-            className="object-contain transition-transform duration-200"
-            draggable={false}
-            style={{
-              transform: `scale(${zoom}) translateX(${touch.deltaX / zoom}px)`,
-              transition: touch.dragging ? "none" : "transform 200ms ease-out",
-            }}
-          />
-        </div>
+        />
+      </div>
 
-        {/* ตัวเลขสถานะ */}
-        <div className="absolute bottom-2 right-3 text-white/80 text-sm">
-          {lightbox.index + 1} / {gallery.length}
-        </div>
+      {/* ตัวเลขสถานะ */}
+      <div className="absolute bottom-2 right-3 text-white/80 text-sm">
+        {lightbox.index + 1} / {gallery.length}
       </div>
     </div>
-  )}
+  </div>
+)}
 </section>
 
       <section id="reviews" className="bg-white border-y">
