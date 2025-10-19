@@ -108,6 +108,53 @@ const dict = {
 };
 
 export default function App() {
+  // ---- Zoom & Pan state ----
+const [zoom, setZoom] = useState(1);          // 1 = ปกติ
+const [pan, setPan] = useState({ x: 0, y: 0 }); // เลื่อนรูปเมื่อซูม
+const [isPanning, setIsPanning] = useState(false);
+const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
+
+const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
+const ZMIN = 1, ZMAX = 3, ZSTEP = 0.25;
+
+const zoomIn  = () => setZoom(z => clamp(z + ZSTEP, ZMIN, ZMAX));
+const zoomOut = () => setZoom(z => clamp(z - ZSTEP, ZMIN, ZMAX));
+const resetZoom = () => { setZoom(1); setPan({x:0,y:0}); };
+
+// ดับเบิลคลิก/ดับเบิลแตะ: สลับ 1x ↔ 2x
+const toggleZoom = () => setZoom(z => (z === 1 ? 2 : 1));
+
+// หมุนเมาส์เพื่อซูม
+const onWheelZoom = (e) => {
+  e.preventDefault();
+  const delta = -e.deltaY * 0.001; // ขึ้น = ขยาย, ลง = หด
+  setZoom(z => clamp(z + delta, ZMIN, ZMAX));
+};
+
+// เริ่มลาก (ทำงานได้ทั้งเมาส์/ทัช เพราะใช้ Pointer Events)
+const onPointerDown = (e) => {
+  // ลากได้เฉพาะตอนซูม > 1
+  if (zoom <= 1) return;
+  e.currentTarget.setPointerCapture?.(e.pointerId);
+  setIsPanning(true);
+  setLastPos({ x: e.clientX, y: e.clientY });
+};
+
+const onPointerMove = (e) => {
+  if (!isPanning || zoom <= 1) return;
+  const dx = e.clientX - lastPos.x;
+  const dy = e.clientY - lastPos.y;
+  setPan(p => ({ x: p.x + dx, y: p.y + dy }));
+  setLastPos({ x: e.clientX, y: e.clientY });
+};
+
+const onPointerUp = () => setIsPanning(false);
+
+// รีเซ็ต pan เมื่อเปลี่ยนรูป / เปิดใหม่
+useEffect(() => {
+  setPan({x:0,y:0});
+}, [lightbox.index, lightbox.open]);
+
   // ==== Gallery data ====
 const gallery = Array.from({ length: 11 }, (_, i) => `/g${i + 1}.jpg`);
 
@@ -478,29 +525,50 @@ const onTouchEnd = () => {
         ›
       </button>
 
-      {/* ภาพใหญ่ + ซูม + ปัด */}
-      <div
-        className="overflow-hidden max-h-[85vh] max-w-[90vw] flex justify-center items-center bg-black rounded-lg"
-        onWheel={(e) => {
-          e.preventDefault();
-          setZoom((z) => Math.min(Math.max(0.5, z + e.deltaY * -0.001), 3));
-        }}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-      >
-        <img
-          src={gallery[lightbox.index]}
-          alt={`preview-${lightbox.index + 1}`}
-          className="object-contain transition-transform duration-200"
-          draggable={false}
-          style={{
-            transform: `scale(${zoom}) translateX(${touch.deltaX / Math.max(zoom, 1)}px)`,
-            transition: touch.dragging ? "none" : "transform 200ms ease-out",
-          }}
-        />
-      </div>
+      {/* ภาพใหญ่ + Zoom & Pan + Wheel + Double Click */}
+<div
+  className="overflow-hidden max-h-[85vh] max-w-[90vw] flex justify-center items-center bg-black rounded-lg select-none touch-none"
+  onWheel={onWheelZoom}
+  onDoubleClick={toggleZoom}
+>
+  <img
+    src={gallery[lightbox.index]}
+    alt={`preview-${lightbox.index + 1}`}
+    className={`object-contain transition-transform duration-200 cursor-${zoom>1 ? 'grab' : 'zoom-in'}`}
+    draggable={false}
+    // Pointer Events = ใช้ได้ทั้งคอม/มือถือ
+    onPointerDown={onPointerDown}
+    onPointerMove={onPointerMove}
+    onPointerUp={onPointerUp}
+    onPointerCancel={onPointerUp}
+    style={{
+      transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+      transition: isPanning ? "none" : "transform 200ms ease-out",
+      touchAction: "none", // กันเบราว์เซอร์ intercept gesture
+      maxHeight: "85vh",
+      maxWidth: "90vw",
+    }}
+  />
+</div>
 
+{/* ปุ่มซูม */}
+<div className="absolute bottom-3 left-3 flex items-center gap-2">
+  <button
+    onClick={zoomOut}
+    className="bg-white/90 hover:bg-white text-gray-900 rounded-md px-3 py-1 shadow"
+    title="ซูมออก"
+  >−</button>
+  <button
+    onClick={resetZoom}
+    className="bg-white/90 hover:bg-white text-gray-900 rounded-md px-3 py-1 shadow"
+    title="รีเซ็ต"
+  >100%</button>
+  <button
+    onClick={zoomIn}
+    className="bg-white/90 hover:bg-white text-gray-900 rounded-md px-3 py-1 shadow"
+    title="ซูมเข้า"
+  >+</button>
+</div>
       {/* ตัวเลขสถานะ */}
       <div className="absolute bottom-2 right-3 text-white/80 text-sm">
         {lightbox.index + 1} / {gallery.length}
