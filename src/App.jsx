@@ -205,17 +205,33 @@ export default function App() {
               <h2 className="text-3xl md:text-5xl font-extrabold leading-tight">{t.heroTitle}</h2>
               <p className="mt-4 text-base md:text-lg text-gray-700">{t.heroSubtitle}</p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <a
-                  href="#contact"
-                  onClick={scrollToContact}
-                  className="px-5 py-3 rounded-xl bg-gray-900 text-white font-semibold hover:opacity-90"
-                >
-                  {t.ctaBook}
-                </a>
-                <a href="tel:+66XXXXXXXXX" className="px-5 py-3 rounded-xl border font-semibold hover:bg-gray-50">
-                  {t.ctaCall}
-                </a>
-              </div>
+  {/* ปุ่มจอง / แชทเลย */}
+  <a
+    href="#contact"
+    onClick={(e) => {
+      e.preventDefault();
+      const el = document.getElementById("contact");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }}
+    className="px-5 py-3 rounded-xl bg-gray-900 text-white font-semibold hover:opacity-90"
+  >
+    {t.ctaBook}
+  </a>
+
+  {/* ปุ่มโทรหาเรา (เพิ่ม scroll ด้วย) */}
+  <a
+    href="#contact"
+    onClick={(e) => {
+      e.preventDefault();
+      const el = document.getElementById("contact");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }}
+    className="px-5 py-3 rounded-xl border font-semibold hover:bg-gray-50"
+  >
+    {t.ctaCall}
+  </a>
+</div>
+
               <p className="mt-3 text-xs text-gray-500">{t.brandTag}</p>
             </div>
             <div className="relative">
