@@ -1,342 +1,188 @@
 import React, { useMemo, useState, useEffect } from "react";
 
+// ===== แปลสองภาษา (ไทย/EN) =====
 const dict = {
   th: {
     langLabel: "ไทย",
     siteTitle: "Paranee Prestige Studio — เช่าชุดไทย & แต่งหน้า ใกล้วัดอรุณ",
     heroTitle: "เช่าชุดไทย ถ่ายรูปสวย ใกล้วัดอรุณ",
     heroSubtitle:
-      "บริการครบวงจร: เช่าชุดไทย แต่งหน้า-ทำผม และช่างภาพมืออาชีพ ในราคาเป็นกันเอง พร้อมอุปกรณ์ครบ สะอาด ใหม่ คุณภาพสูง",
+      "บริการครบวงจร: เช่าชุดไทย แต่งหน้า-ทำผม และช่างภาพมืออาชีพ ราคากันเอง อุปกรณ์ครบ สะอาด คุณภาพดี",
     ctaBook: "จองคิว / แชทเลย",
     ctaCall: "โทรหาเรา",
     aboutTitle: "เกี่ยวกับเรา",
     aboutBody:
-      "เราเป็นสตูดิโอเช่าชุดไทยและบริการแต่งหน้า/ถ่ายภาพ ตั้งอยู่ใกล้ \"วัดอรุณ\" เดินทางสะดวก ดูแลอย่างมืออาชีพ ใส่ใจความสะอาดของชุดและเครื่องประดับ ซักทุกวัน พร้อมอุปกรณ์ครบถ้วน",
+      'เราเป็นสตูดิโอเช่าชุดไทย แต่งหน้า และถ่ายภาพ ใกล้ "วัดอรุณ" ดูแลความสะอาดของชุด ซักทุกวัน พร้อมเครื่องประดับครบ',
     servicesTitle: "แพ็กเกจ & ราคา",
-    rental: "เช่าชุดไทย (หญิง/ชาย) คนละ",
+    rental: "เช่าชุดไทย คนละ",
     baht: "บาท",
-    makeup200: "แต่งหน้าพื้นฐาน (Natural) — 200 บาท",
-    makeup500: "แต่งหน้าพรีเมียม (Detailed) — 500 บาท",
+    makeup200: "แต่งหน้าธรรมชาติ — 200 บาท",
+    makeup500: "แต่งหน้าพรีเมียม — 500 บาท",
     photographerTitle: "บริการช่างภาพ",
     photo12: "1–2 คน — 1,500 บาท",
-    photo34: "3–4 คน — 2,000 บาท (เพิ่มคนถัดไป +500 บาท/ทุก 2 คน)",
-    includedTitle: "สิ่งที่รวมในบริการ",
+    photo34: "3–4 คน — 2,000 บาท (+500 ต่อ 2 คนถัดไป)",
+    includedTitle: "สิ่งที่รวม",
     includedItems: [
-      "เครื่องประดับครบชุด, ผ้าโพก/ผ้าเบี่ยง, เข็มขัด",
+      "เครื่องประดับครบชุด",
       "ทำผมเบื้องต้นให้เข้าชุด",
-      "ห้องแต่งตัว/พื้นที่เปลี่ยนชุดสะอาด",
-    ],
-    makeupTitle: "เมคอัพที่ให้บริการ",
-    makeupList: [
-      "รองพื้น (Foundation)",
-      "คอนซีลเลอร์ (Concealer)",
-      "แป้งฝุ่น/แป้งผสมรองพื้น (Foundation Powder)",
-      "คิ้ว (Eyebrow)",
-      "อายแชโดว์ (Eyeshadow)",
-      "อายไลเนอร์ & มาสคาร่า (Eyeliner & Mascara)",
-      "บรอนเซอร์ & คอนทัวร์ (Bronzer & Contour)",
-      "บลัชออน & ไฮไลต์ (Blush & Highlight)",
-      "ลิปสติก (Lipstick)",
+      "ห้องเปลี่ยนชุดสะอาด",
     ],
     galleryTitle: "แกลเลอรี่",
     reviewsTitle: "รีวิวจากลูกค้า",
-    review1:
-      "บริการดีมากค่ะ ชุดสวยสะอาด ถ่ายรูปออกมาสวยมาก อยู่ใกล้วัดอรุณ เดินไม่ไกล",
-    review2:
-      "แต่งหน้าดี หน้าเป๊ะติดทน ถ่ายรูปได้หลายมุม ประทับใจสุดๆ",
-    locationTitle: "ที่ตั้ง & เวลาเปิดให้บริการ",
+    review1: "บริการดีมาก ชุดสวยสะอาด ถ่ายรูปออกมาสวย ใกล้วัดอรุณเดินไม่ไกล",
+    review2: "แต่งหน้าติดทน ช่างภาพมืออาชีพ มุมถ่ายเยอะ ประทับใจค่ะ",
+    locationTitle: "ที่ตั้ง & เวลาเปิด",
     address:
-      "ใกล้วัดอรุณราชวราราม เขตบางกอกใหญ่ กรุงเทพมหานคร (พิกัดจะแจ้งหลังแชท)",
+      "ใกล้วัดอรุณราชวราราม เขตบางกอกใหญ่ กรุงเทพฯ (พิกัดแจ้งทางแชท)",
     hours: "เวลาเปิด: โปรดสอบถาม (อัปเดตในแชท)",
     map: "เปิดแผนที่",
     contactTitle: "ติดต่อเรา",
-    contactSub: "แชทจองคิว สอบถามคิว-ราคา หรือขอคำแนะนำเส้นทาง",
-    footer: "© " + new Date().getFullYear() + " Paranee Prestige Studio. All rights reserved.",
+    contactSub: "แชทจองคิว สอบถามคิว-ราคา หรือขอเส้นทาง",
+    footer:
+      "© " +
+      new Date().getFullYear() +
+      " Paranee Prestige Studio. All rights reserved.",
     brandTag: "Makeup by Paranee Prestige Studio",
   },
   en: {
     langLabel: "EN",
-    siteTitle: "Paranee Prestige Studio — Thai Costume Rental, Makeup & Photography near Wat Arun",
+    siteTitle:
+      "Paranee Prestige Studio — Thai Costume Rental, Makeup & Photography near Wat Arun",
     heroTitle: "Thai Costume Rental • Makeup • Photography",
     heroSubtitle:
-      "All‑in‑one service near Wat Arun: clean, high‑quality costumes with full accessories, makeup & hair, and professional photographers at friendly prices.",
+      "All-in-one near Wat Arun: clean, high-quality costumes with full accessories, makeup & hair, and pro photographers at friendly prices.",
     ctaBook: "Chat / Book Now",
     ctaCall: "Call us",
     aboutTitle: "About Us",
     aboutBody:
-      "We are a Thai costume rental, makeup and photography studio located near Wat Arun. We care about hygiene: costumes and accessories are cleaned daily and kept in top condition.",
+      "Thai costume rental, makeup, and photography studio near Wat Arun. Costumes & accessories are cleaned daily and kept in top condition.",
     servicesTitle: "Packages & Pricing",
-    rental: "Thai costume rental (any gender) per person",
+    rental: "Thai costume rental per person",
     baht: "THB",
-    makeup200: "Basic makeup (Natural) — 200 THB",
-    makeup500: "Premium makeup (Detailed) — 500 THB",
+    makeup200: "Basic makeup — 200 THB",
+    makeup500: "Premium makeup — 500 THB",
     photographerTitle: "Photography Service",
     photo12: "1–2 people — 1,500 THB",
-    photo34: "3–4 people — 2,000 THB (+500 THB per additional 2 people)",
+    photo34: "3–4 people — 2,000 THB (+500 per next 2 people)",
     includedTitle: "What’s Included",
     includedItems: [
-      "Full accessories set, shawl, belt",
-      "Basic hairstyling to match the outfit",
+      "Full accessory set",
+      "Basic hairstyling",
       "Clean changing area",
-    ],
-    makeupTitle: "Makeup Items",
-    makeupList: [
-      "Foundation",
-      "Concealer",
-      "Foundation Powder",
-      "Eyebrow",
-      "Eyeshadow",
-      "Eyeliner & Mascara",
-      "Bronzer & Contour",
-      "Blush & Highlight",
-      "Lipstick",
     ],
     galleryTitle: "Gallery",
     reviewsTitle: "Customer Reviews",
-    review1: "Great service and clean costumes. Close to Wat Arun and the photos turned out amazing!",
-    review2: "Makeup was professional and long‑lasting. Many photo spots. Highly recommended!",
+    review1:
+      "Great service and clean costumes. Close to Wat Arun and the photos turned out amazing!",
+    review2:
+      "Professional, long-lasting makeup. Many photo spots. Highly recommended!",
     locationTitle: "Location & Hours",
-    address:
-      "Near Wat Arun, Bangkok (exact pin will be shared after chat)",
+    address: "Near Wat Arun, Bangkok (exact pin will be shared via chat)",
     hours: "Open hours: please ask (we update via chat)",
     map: "Open Map",
     contactTitle: "Contact Us",
     contactSub: "Message us to book, ask for pricing, or get directions",
-    footer: "© " + new Date().getFullYear() + " Paranee Prestige Studio. All rights reserved.",
+    footer:
+      "© " +
+      new Date().getFullYear() +
+      " Paranee Prestige Studio. All rights reserved.",
     brandTag: "Makeup by Paranee Prestige Studio",
   },
 };
 
 export default function App() {
-  // ---- Zoom & Pan state ----
-const [zoom, setZoom] = useState(1);          // 1 = ปกติ
-const [pan, setPan] = useState({ x: 0, y: 0 }); // เลื่อนรูปเมื่อซูม
-const [isPanning, setIsPanning] = useState(false);
-const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
-
-const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
-const ZMIN = 1, ZMAX = 3, ZSTEP = 0.25;
-
-const zoomIn  = () => setZoom(z => clamp(z + ZSTEP, ZMIN, ZMAX));
-const zoomOut = () => setZoom(z => clamp(z - ZSTEP, ZMIN, ZMAX));
-const resetZoom = () => { setZoom(1); setPan({x:0,y:0}); };
-
-// ดับเบิลคลิก/ดับเบิลแตะ: สลับ 1x ↔ 2x
-const toggleZoom = () => setZoom(z => (z === 1 ? 2 : 1));
-
-// หมุนเมาส์เพื่อซูม
-const onWheelZoom = (e) => {
-  e.preventDefault();
-  const delta = -e.deltaY * 0.001; // ขึ้น = ขยาย, ลง = หด
-  setZoom(z => clamp(z + delta, ZMIN, ZMAX));
-};
-
-// เริ่มลาก (ทำงานได้ทั้งเมาส์/ทัช เพราะใช้ Pointer Events)
-const onPointerDown = (e) => {
-  // ลากได้เฉพาะตอนซูม > 1
-  if (zoom <= 1) return;
-  e.currentTarget.setPointerCapture?.(e.pointerId);
-  setIsPanning(true);
-  setLastPos({ x: e.clientX, y: e.clientY });
-};
-
-const onPointerMove = (e) => {
-  if (!isPanning || zoom <= 1) return;
-  const dx = e.clientX - lastPos.x;
-  const dy = e.clientY - lastPos.y;
-  setPan(p => ({ x: p.x + dx, y: p.y + dy }));
-  setLastPos({ x: e.clientX, y: e.clientY });
-};
-
-const onPointerUp = () => setIsPanning(false);
-
-// รีเซ็ต pan เมื่อเปลี่ยนรูป / เปิดใหม่
-useEffect(() => {
-  setPan({x:0,y:0});
-}, [lightbox.index, lightbox.open]);
-
-  // ==== Gallery data ====
-const gallery = Array.from({ length: 11 }, (_, i) => `/g${i + 1}.jpg`);
-
-// ==== Lightbox state ====
-const [lightbox, setLightbox] = useState({ open: false, index: 0 });
-
-// ==== Swipe state ====
-const [touch, setTouch] = useState({ startX: 0, deltaX: 0, dragging: false });
-
-// ==== Zoom state ====
-const [zoom, setZoom] = useState(1);
-const [pinchDist, setPinchDist] = useState(0);
-
-// ปุ่มคีย์บอร์ด
-useEffect(() => {
-  if (!lightbox.open) return;
-  const onKey = (e) => {
-    if (e.key === "Escape") setLightbox((s) => ({ ...s, open: false }));
-    if (e.key === "ArrowRight") next();
-    if (e.key === "ArrowLeft") prev();
-  };
-  window.addEventListener("keydown", onKey);
-  return () => window.removeEventListener("keydown", onKey);
-}, [lightbox.open]);
-
-const next = () =>
-  setLightbox((s) => ({ open: true, index: (s.index + 1) % gallery.length }));
-const prev = () =>
-  setLightbox((s) => ({ open: true, index: (s.index - 1 + gallery.length) % gallery.length }));
-
-// รีเซ็ตซูมทุกครั้งที่เปลี่ยนรูป/เปิด
-useEffect(() => {
-  if (lightbox.open) setZoom(1);
-}, [lightbox.index, lightbox.open]);
-
-// Touch handlers (รวม swipe + pinch)
-const onTouchStart = (e) => {
-  if (e.touches.length === 2) {
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    setPinchDist(Math.hypot(dx, dy));
-  } else if (e.touches.length === 1) {
-    const x = e.touches[0].clientX;
-    setTouch({ startX: x, deltaX: 0, dragging: true });
-  }
-};
-
-const onTouchMove = (e) => {
-  // กันเบราว์เซอร์ scroll/zoom เอง (สำคัญมาก)
-  e.preventDefault();
-
-  if (e.touches.length === 2) {
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    const newDist = Math.hypot(dx, dy);
-    setZoom((z) => Math.min(Math.max(0.5, (z * newDist) / Math.max(pinchDist, 1)), 3));
-    setPinchDist(newDist);
-  } else if (touch.dragging && e.touches.length === 1) {
-    const x = e.touches[0].clientX;
-    setTouch((s) => ({ ...s, deltaX: x - s.startX }));
-  }
-};
-
-const onTouchEnd = () => {
-  if (touch.dragging) {
-    const THRESHOLD = 60;
-    if (touch.deltaX > THRESHOLD) prev();
-    else if (touch.deltaX < -THRESHOLD) next();
-  }
-  setTouch({ startX: 0, deltaX: 0, dragging: false });
-  setPinchDist(0);
-};
-
-  // ==== Gallery data ====
-const gallery = Array.from({ length: 11 }, (_, i) => `/g${i + 1}.jpg`);
-
-// ==== Lightbox state ====
-const [lightbox, setLightbox] = useState({ open: false, index: 0 });
-
-// ==== Swipe state ====
-const [touch, setTouch] = useState({ startX: 0, deltaX: 0, dragging: false });
-
-// ==== Zoom state ====
-const [zoom, setZoom] = useState(1);
-const [pinchDist, setPinchDist] = useState(0);
-
-// ปุ่มคีย์บอร์ด: Esc ปิด, ←/→ เปลี่ยนรูป
-useEffect(() => {
-  if (!lightbox.open) return;
-  const onKey = (e) => {
-    if (e.key === "Escape") setLightbox((s) => ({ ...s, open: false }));
-    if (e.key === "ArrowRight") next();
-    if (e.key === "ArrowLeft") prev();
-  };
-  window.addEventListener("keydown", onKey);
-  return () => window.removeEventListener("keydown", onKey);
-}, [lightbox.open, gallery.length]);
-
-// เปลี่ยนรูปถัดไป/ก่อนหน้า
-const next = () =>
-  setLightbox((s) => ({ open: true, index: (s.index + 1) % gallery.length }));
-const prev = () =>
-  setLightbox((s) => ({
-    open: true,
-    index: (s.index - 1 + gallery.length) % gallery.length,
-  }));
-
-// รีเซ็ตซูมทุกครั้งที่เปิดภาพใหม่
-useEffect(() => {
-  if (lightbox.open) setZoom(1);
-}, [lightbox.index, lightbox.open]);
-
-// Touch handlers: รองรับ 1 นิ้ว = swipe, 2 นิ้ว = pinch zoom
-const onTouchStart = (e) => {
-  if (e.touches.length === 2) {
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    setPinchDist(Math.hypot(dx, dy));
-  } else if (e.touches.length === 1) {
-    const x = e.touches[0].clientX;
-    setTouch({ startX: x, deltaX: 0, dragging: true });
-  }
-};
-
-const onTouchMove = (e) => {
-  if (e.touches.length === 2) {
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    const newDist = Math.hypot(dx, dy);
-    setZoom((z) => Math.min(Math.max(0.5, (z * newDist) / Math.max(pinchDist, 1)), 3));
-    setPinchDist(newDist);
-  } else if (touch.dragging && e.touches.length === 1) {
-    const x = e.touches[0].clientX;
-    setTouch((s) => ({ ...s, deltaX: x - s.startX }));
-  }
-};
-
-const onTouchEnd = () => {
-  if (touch.dragging) {
-    const THRESHOLD = 60;
-    if (touch.deltaX > THRESHOLD) prev();
-    else if (touch.deltaX < -THRESHOLD) next();
-  }
-  setTouch({ startX: 0, deltaX: 0, dragging: false });
-  setPinchDist(0);
-};
-
-  // ------- เพิ่มส่วนนี้ไว้ก่อน return() ---------
-const gallery = Array.from({ length: 11 }, (_, i) => `/g${i + 1}.jpg`);
-const [lightbox, setLightbox] = useState({ open: false, index: 0 });
-const [touch, setTouch] = useState({ startX: 0, deltaX: 0, dragging: false });
-
-const next = () =>
-  setLightbox((s) => ({ open: true, index: (s.index + 1) % gallery.length }));
-const prev = () =>
-  setLightbox((s) => ({
-    open: true,
-    index: (s.index - 1 + gallery.length) % gallery.length,
-  }));
-
-const onTouchStart = (e) => {
-  const x = e.touches[0].clientX;
-  setTouch({ startX: x, deltaX: 0, dragging: true });
-};
-const onTouchMove = (e) => {
-  if (!touch.dragging) return;
-  const x = e.touches[0].clientX;
-  setTouch((s) => ({ ...s, deltaX: x - s.startX }));
-};
-const onTouchEnd = () => {
-  if (!touch.dragging) return;
-  const THRESHOLD = 60;
-  if (touch.deltaX > THRESHOLD) prev();
-  else if (touch.deltaX < -THRESHOLD) next();
-  setTouch({ startX: 0, deltaX: 0, dragging: false });
-};
-
+  // ===== Language =====
   const [lang, setLang] = useState("th");
   const t = useMemo(() => dict[lang], [lang]);
 
+  // ===== Smooth scroll (ถ้าใส่ใน index.css แล้ว ส่วนนี้ไม่จำเป็น) =====
+  // (ใส่เผื่อไว้: จะเรียก scrollIntoView ด้วย behavior: smooth)
+  const scrollToContact = (e) => {
+    e?.preventDefault?.();
+    const el = document.getElementById("contact");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  // ====== GALLERY: data ======
+  const gallery = Array.from({ length: 11 }, (_, i) => `/g${i + 1}.jpg`);
+
+  // ====== LIGHTBOX: open/close & index ======
+  const [lightbox, setLightbox] = useState({ open: false, index: 0 });
+
+  // ====== SWIPE (left/right) ======
+  const [touch, setTouch] = useState({
+    startX: 0,
+    deltaX: 0,
+    dragging: false,
+  });
+
+  // ====== ZOOM & PAN (ซูม + ลากรูป) ======
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
+
+  const clamp = (v, mn, mx) => Math.min(Math.max(v, mn), mx);
+  const ZMIN = 1,
+    ZMAX = 3,
+    ZSTEP = 0.25;
+
+  const zoomIn = () => setZoom((z) => clamp(z + ZSTEP, ZMIN, ZMAX));
+  const zoomOut = () => setZoom((z) => clamp(z - ZSTEP, ZMIN, ZMAX));
+  const resetZoom = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  };
+  const toggleZoom = () => setZoom((z) => (z === 1 ? 2 : 1));
+  const onWheelZoom = (e) => {
+    e.preventDefault();
+    const d = -e.deltaY * 0.001;
+    setZoom((z) => clamp(z + d, ZMIN, ZMAX));
+  };
+
+  const onPointerDown = (e) => {
+    if (zoom <= 1) return;
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    setIsPanning(true);
+    setLastPos({ x: e.clientX, y: e.clientY });
+  };
+  const onPointerMove = (e) => {
+    if (!isPanning || zoom <= 1) return;
+    const dx = e.clientX - lastPos.x;
+    const dy = e.clientY - lastPos.y;
+    setPan((p) => ({ x: p.x + dx, y: p.y + dy }));
+    setLastPos({ x: e.clientX, y: e.clientY });
+  };
+  const onPointerUp = () => setIsPanning(false);
+
+  // Reset zoom/pan เมื่อเปลี่ยนภาพหรือเปิดใหม่
+  useEffect(() => {
+    if (lightbox.open) {
+      setZoom(1);
+      setPan({ x: 0, y: 0 });
+    }
+  }, [lightbox.index, lightbox.open]);
+
+  // Keyboard: Esc / ← →
+  useEffect(() => {
+    if (!lightbox.open) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setLightbox((s) => ({ ...s, open: false }));
+      if (e.key === "ArrowRight")
+        setLightbox((s) => ({ open: true, index: (s.index + 1) % gallery.length }));
+      if (e.key === "ArrowLeft")
+        setLightbox((s) => ({
+          open: true,
+          index: (s.index - 1 + gallery.length) % gallery.length,
+        }));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox.open, gallery.length]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 text-gray-900">
+      {/* ===== Top Bar ===== */}
       <div className="w-full border-b bg-white/80 backdrop-blur z-40 sticky top-0">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
@@ -346,7 +192,7 @@ const onTouchEnd = () => {
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            {(["th", "en"]).map((code) => (
+            {["th", "en"].map((code) => (
               <button
                 key={code}
                 onClick={() => setLang(code)}
@@ -362,6 +208,7 @@ const onTouchEnd = () => {
             ))}
             <a
               href="#contact"
+              onClick={scrollToContact}
               className="hidden sm:inline-flex px-4 py-2 rounded-full bg-gray-900 text-white text-sm font-medium hover:opacity-90"
             >
               {t.ctaBook}
@@ -370,9 +217,11 @@ const onTouchEnd = () => {
         </div>
       </div>
 
+      {/* ===== Hero ===== */}
       <section className="relative">
         <div
-          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600&auto=format&fit=crop')] bg-cover bg-center opacity-20"
+          className="absolute inset-0 bg-cover bg-center opacity-20"
+          style={{ backgroundImage: "url('/bg.jpg')" }} // ใส่ภาพ bg ใน public/bg.jpg (ถ้าไม่มีใช้ได้อยู่)
           aria-hidden
         />
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
@@ -387,6 +236,7 @@ const onTouchEnd = () => {
               <div className="mt-6 flex flex-wrap gap-3">
                 <a
                   href="#contact"
+                  onClick={scrollToContact}
                   className="px-5 py-3 rounded-xl bg-gray-900 text-white font-semibold hover:opacity-90"
                 >
                   {t.ctaBook}
@@ -405,7 +255,7 @@ const onTouchEnd = () => {
                 <img
                   alt="Thai costume near Wat Arun"
                   className="w-full h-72 md:h-96 object-cover"
-                  src="https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=1600&auto=format&fit=crop"
+                  src="/hero.jpg" // ใส่ภาพ hero ใน public/hero.jpg
                 />
               </div>
             </div>
@@ -413,15 +263,16 @@ const onTouchEnd = () => {
         </div>
       </section>
 
+      {/* ===== About ===== */}
       <section id="about" className="max-w-6xl mx-auto px-4 py-14 md:py-20">
         <h3 className="text-2xl md:text-3xl font-bold">{t.aboutTitle}</h3>
         <p className="mt-4 text-gray-700 leading-relaxed">{t.aboutBody}</p>
       </section>
 
+      {/* ===== Services ===== */}
       <section id="services" className="bg-white border-y">
         <div className="max-w-6xl mx-auto px-4 py-14 md:py-20">
           <h3 className="text-2xl md:text-3xl font-bold">{t.servicesTitle}</h3>
-
           <div className="mt-6 grid md:grid-cols-3 gap-6">
             <div className="p-6 rounded-2xl border bg-white shadow-sm">
               <h4 className="text-lg font-semibold">Rental</h4>
@@ -434,150 +285,159 @@ const onTouchEnd = () => {
                 ))}
               </ul>
             </div>
-
             <div className="p-6 rounded-2xl border bg-white shadow-sm">
               <h4 className="text-lg font-semibold">Makeup</h4>
               <p className="mt-2 text-gray-700">{t.makeup200}</p>
               <p className="text-gray-700">{t.makeup500}</p>
-              <details className="mt-4">
-                <summary className="cursor-pointer text-sm font-medium">{t.makeupTitle}</summary>
-                <ul className="mt-2 space-y-1 text-sm text-gray-700 list-disc list-inside">
-                  {t.makeupList.map((i, idx) => (
-                    <li key={idx}>{i}</li>
-                  ))}
-                </ul>
-              </details>
             </div>
-
             <div className="p-6 rounded-2xl border bg-white shadow-sm">
               <h4 className="text-lg font-semibold">{t.photographerTitle}</h4>
               <p className="mt-2 text-gray-700">{t.photo12}</p>
               <p className="text-gray-700">{t.photo34}</p>
             </div>
           </div>
-
           <p className="mt-4 text-xs text-gray-500">
             * ราคาอาจเปลี่ยนแปลงตามโปรโมชั่น/ช่วงเวลา กรุณาแชทเพื่อยืนยัน
           </p>
         </div>
       </section>
 
-    <section id="gallery" className="max-w-6xl mx-auto px-4 py-14 md:py-20">
-  <h3 className="text-2xl md:text-3xl font-bold">{t.galleryTitle}</h3>
+      {/* ===== Gallery + Lightbox ===== */}
+      <section id="gallery" className="max-w-6xl mx-auto px-4 py-14 md:py-20">
+        <h3 className="text-2xl md:text-3xl font-bold">{t.galleryTitle}</h3>
 
-  {/* Thumbnails */}
-  <div className="mt-6 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-    {gallery.map((src, i) => (
-      <button
-        key={i}
-        type="button"
-        onClick={() => setLightbox({ open: true, index: i })}
-        className="group relative rounded-2xl overflow-hidden border focus:outline-none focus:ring-2 focus:ring-gray-900"
-        aria-label={`open image ${i + 1}`}
-      >
-        <img
-          alt={`gallery-${i + 1}`}
-          className="w-full h-52 object-cover transition-transform duration-300 group-hover:scale-105"
-          src={src}
-          loading="lazy"
-        />
-      </button>
-    ))}
-  </div>
+        {/* Thumbnails */}
+        <div className="mt-6 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {gallery.map((src, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setLightbox({ open: true, index: i })}
+              className="group relative rounded-2xl overflow-hidden border focus:outline-none focus:ring-2 focus:ring-gray-900"
+              aria-label={`open image ${i + 1}`}
+            >
+              <img
+                alt={`gallery-${i + 1}`}
+                className="w-full h-52 object-cover transition-transform duration-300 group-hover:scale-105"
+                src={src}
+                loading="lazy"
+              />
+            </button>
+          ))}
+        </div>
 
-  {/* Lightbox */}
-  {lightbox.open && (
-  <div
-    role="dialog"
-    aria-modal="true"
-    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-    onClick={() => setLightbox((s) => ({ ...s, open: false }))} // คลิกพื้นหลังปิด
-  >
-    <div
-      className="relative max-w-[90vw] max-h-[85vh] touch-none select-none" // << สำคัญ: touch-none
-      onClick={(e) => e.stopPropagation()} // กันคลิกทะลุ
-    >
-      {/* ปุ่มปิด */}
-      <button
-        onClick={() => setLightbox((s) => ({ ...s, open: false }))}
-        className="absolute -top-3 -right-3 bg-white text-gray-900 rounded-full w-9 h-9 shadow flex items-center justify-center"
-        aria-label="close"
-        title="ปิด (Esc)"
-      >
-        ✕
-      </button>
+        {/* Lightbox */}
+        {lightbox.open && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+            onClick={() => setLightbox((s) => ({ ...s, open: false }))}
+          >
+            <div
+              className="relative max-w-[90vw] max-h-[85vh] touch-none select-none"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close */}
+              <button
+                onClick={() => setLightbox((s) => ({ ...s, open: false }))}
+                className="absolute -top-3 -right-3 bg-white text-gray-900 rounded-full w-9 h-9 shadow flex items-center justify-center"
+                aria-label="close"
+                title="ปิด (Esc)"
+              >
+                ✕
+              </button>
 
-      {/* ก่อนหน้า/ถัดไป */}
-      <button
-        onClick={prev}
-        className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-900 rounded-full w-10 h-10 shadow flex items-center justify-center"
-        aria-label="previous"
-        title="ก่อนหน้า (←/ปัดขวา)"
-      >
-        ‹
-      </button>
-      <button
-        onClick={next}
-        className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-900 rounded-full w-10 h-10 shadow flex items-center justify-center"
-        aria-label="next"
-        title="ถัดไป (→/ปัดซ้าย)"
-      >
-        ›
-      </button>
+              {/* Prev/Next */}
+              <button
+                onClick={() =>
+                  setLightbox((s) => ({
+                    open: true,
+                    index: (s.index - 1 + gallery.length) % gallery.length,
+                  }))
+                }
+                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-900 rounded-full w-10 h-10 shadow flex items-center justify-center"
+                aria-label="previous"
+                title="ก่อนหน้า (←)"
+              >
+                ‹
+              </button>
+              <button
+                onClick={() =>
+                  setLightbox((s) => ({
+                    open: true,
+                    index: (s.index + 1) % gallery.length,
+                  }))
+                }
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-900 rounded-full w-10 h-10 shadow flex items-center justify-center"
+                aria-label="next"
+                title="ถัดไป (→)"
+              >
+                ›
+              </button>
 
-      {/* ภาพใหญ่ + Zoom & Pan + Wheel + Double Click */}
-<div
-  className="overflow-hidden max-h-[85vh] max-w-[90vw] flex justify-center items-center bg-black rounded-lg select-none touch-none"
-  onWheel={onWheelZoom}
-  onDoubleClick={toggleZoom}
->
-  <img
-    src={gallery[lightbox.index]}
-    alt={`preview-${lightbox.index + 1}`}
-    className={`object-contain transition-transform duration-200 cursor-${zoom>1 ? 'grab' : 'zoom-in'}`}
-    draggable={false}
-    // Pointer Events = ใช้ได้ทั้งคอม/มือถือ
-    onPointerDown={onPointerDown}
-    onPointerMove={onPointerMove}
-    onPointerUp={onPointerUp}
-    onPointerCancel={onPointerUp}
-    style={{
-      transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-      transition: isPanning ? "none" : "transform 200ms ease-out",
-      touchAction: "none", // กันเบราว์เซอร์ intercept gesture
-      maxHeight: "85vh",
-      maxWidth: "90vw",
-    }}
-  />
-</div>
+              {/* Image: Zoom + Pan + Wheel + Double Click */}
+              <div
+                className="overflow-hidden max-h-[85vh] max-w-[90vw] flex justify-center items-center bg-black rounded-lg"
+                onWheel={onWheelZoom}
+                onDoubleClick={toggleZoom}
+              >
+                <img
+                  src={gallery[lightbox.index]}
+                  alt={`preview-${lightbox.index + 1}`}
+                  className={`object-contain transition-transform duration-200 ${
+                    zoom > 1 ? "cursor-grab" : "cursor-zoom-in"
+                  }`}
+                  draggable={false}
+                  onPointerDown={onPointerDown}
+                  onPointerMove={onPointerMove}
+                  onPointerUp={onPointerUp}
+                  onPointerCancel={onPointerUp}
+                  style={{
+                    transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+                    transition: isPanning ? "none" : "transform 200ms ease-out",
+                    touchAction: "none",
+                    maxHeight: "85vh",
+                    maxWidth: "90vw",
+                  }}
+                />
+              </div>
 
-{/* ปุ่มซูม */}
-<div className="absolute bottom-3 left-3 flex items-center gap-2">
-  <button
-    onClick={zoomOut}
-    className="bg-white/90 hover:bg-white text-gray-900 rounded-md px-3 py-1 shadow"
-    title="ซูมออก"
-  >−</button>
-  <button
-    onClick={resetZoom}
-    className="bg-white/90 hover:bg-white text-gray-900 rounded-md px-3 py-1 shadow"
-    title="รีเซ็ต"
-  >100%</button>
-  <button
-    onClick={zoomIn}
-    className="bg-white/90 hover:bg-white text-gray-900 rounded-md px-3 py-1 shadow"
-    title="ซูมเข้า"
-  >+</button>
-</div>
-      {/* ตัวเลขสถานะ */}
-      <div className="absolute bottom-2 right-3 text-white/80 text-sm">
-        {lightbox.index + 1} / {gallery.length}
-      </div>
-    </div>
-  </div>
-)}
-</section>
+              {/* Zoom buttons */}
+              <div className="absolute bottom-3 left-3 flex items-center gap-2">
+                <button
+                  onClick={zoomOut}
+                  className="bg-white/90 hover:bg-white text-gray-900 rounded-md px-3 py-1 shadow"
+                  title="ซูมออก"
+                >
+                  −
+                </button>
+                <button
+                  onClick={resetZoom}
+                  className="bg-white/90 hover:bg-white text-gray-900 rounded-md px-3 py-1 shadow"
+                  title="รีเซ็ต"
+                >
+                  100%
+                </button>
+                <button
+                  onClick={zoomIn}
+                  className="bg-white/90 hover:bg-white text-gray-900 rounded-md px-3 py-1 shadow"
+                  title="ซูมเข้า"
+                >
+                  +
+                </button>
+              </div>
 
+              {/* Counter */}
+              <div className="absolute bottom-2 right-3 text-white/80 text-sm">
+                {lightbox.index + 1} / {gallery.length}
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* ===== Reviews ===== */}
       <section id="reviews" className="bg-white border-y">
         <div className="max-w-6xl mx-auto px-4 py-14 md:py-20">
           <h3 className="text-2xl md:text-3xl font-bold">{t.reviewsTitle}</h3>
@@ -592,13 +452,17 @@ const onTouchEnd = () => {
         </div>
       </section>
 
+      {/* ===== Location ===== */}
       <section id="location" className="max-w-6xl mx-auto px-4 py-14 md:py-20">
         <h3 className="text-2xl md:text-3xl font-bold">{t.locationTitle}</h3>
         <div className="mt-4 grid md:grid-cols-2 gap-6 items-start">
           <div>
             <p className="text-gray-700">{t.address}</p>
             <p className="text-gray-700 mt-1">{t.hours}</p>
-            <a className="inline-block mt-4 px-4 py-2 rounded-xl border font-medium hover:bg-gray-50" href="#map">
+            <a
+              className="inline-block mt-4 px-4 py-2 rounded-xl border font-medium hover:bg-gray-50"
+              href="#map"
+            >
               {t.map}
             </a>
           </div>
@@ -606,24 +470,38 @@ const onTouchEnd = () => {
             <img
               alt="map-placeholder"
               className="w-full h-64 object-cover"
-              src="https://images.unsplash.com/photo-1502920917128-1aa500764b8a?q=80&w=1400&auto=format&fit=crop"
+              src="/map.jpg"
             />
           </div>
         </div>
       </section>
 
-      <section id="contact" className="bg-gray-900 text-white">
+      {/* ===== Contact ===== */}
+      <section id="contact" className="bg-gray-900 text-white scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4 py-14 md:py-20">
           <h3 className="text-2xl md:text-3xl font-bold">{t.contactTitle}</h3>
           <p className="mt-2 text-gray-300">{t.contactSub}</p>
           <div className="mt-6 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <a className="block text-center px-5 py-3 rounded-xl bg-white text-gray-900 font-semibold hover:opacity-90" href="https://line.me/R/ti/p/%40YOUR_LINE_ID" target="_blank" rel="noreferrer">
+            <a
+              className="block text-center px-5 py-3 rounded-xl bg-white text-gray-900 font-semibold hover:opacity-90"
+              href="https://line.me/R/ti/p/%40YOUR_LINE_ID"
+              target="_blank"
+              rel="noreferrer"
+            >
               LINE
             </a>
-            <a className="block text-center px-5 py-3 rounded-xl bg-white text-gray-900 font-semibold hover:opacity-90" href="https://wa.me/YOUR_NUMBER" target="_blank" rel="noreferrer">
+            <a
+              className="block text-center px-5 py-3 rounded-xl bg-white text-gray-900 font-semibold hover:opacity-90"
+              href="https://wa.me/YOUR_NUMBER"
+              target="_blank"
+              rel="noreferrer"
+            >
               WhatsApp
             </a>
-            <a className="block text-center px-5 py-3 rounded-xl bg-white text-gray-900 font-semibold hover:opacity-90" href="tel:+66XXXXXXXXX">
+            <a
+              className="block text-center px-5 py-3 rounded-xl bg-white text-gray-900 font-semibold hover:opacity-90"
+              href="tel:+66XXXXXXXXX"
+            >
               {t.ctaCall}
             </a>
           </div>
@@ -633,6 +511,7 @@ const onTouchEnd = () => {
         </div>
       </section>
 
+      {/* ===== Footer ===== */}
       <footer className="border-t bg-white">
         <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-sm text-gray-600">{t.footer}</p>
