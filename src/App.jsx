@@ -246,7 +246,7 @@ export default function App() {
               key={i}
               alt={`gallery-${i}`}
               className="w-full h-52 object-cover rounded-2xl border"
-              src=["/g1.jpg","/g2.jpg","/g3.jpg","/g4.jpg","/g5.jpg","/g6.jpg"]
+              src={"/g1.jpg","/g2.jpg","/g3.jpg","/g4.jpg","/g5.jpg","/g6.jpg"}
             />
           ))}
         </div>
