@@ -393,19 +393,29 @@ export default function App() {
       </section>
 
       {/* ===== Location ===== */}
-      <section id="location" className="max-w-6xl mx-auto px-4 py-14 md:py-20">
-        <h3 className="text-2xl md:text-3xl font-bold">{t.locationTitle}</h3>
-        <div className="mt-4 grid md:grid-cols-2 gap-6 items-start">
-          <div>
-            <p className="text-gray-700">{t.address}</p>
-            <p className="text-gray-700 mt-1">{t.hours}</p>
-            <a className="inline-block mt-4 px-4 py-2 rounded-xl border font-medium hover:bg-gray-50" href="#map">{t.map}</a>
-          </div>
-          <div className="rounded-2xl overflow-hidden border" id="map">
-            <img alt="map-placeholder" className="w-full h-64 object-cover" src="/map.jpg" />
-          </div>
-        </div>
-      </section>
+      <section
+  id="location"
+  className="max-w-6xl mx-auto px-4 py-14 md:py-20 text-center"
+>
+  <h3 className="text-2xl md:text-3xl font-bold mb-6 flex items-center justify-center gap-2">
+    <span>📍</span> แผนที่ร้าน Paranee Prestige Studio
+  </h3>
+
+  <div className="rounded-2xl overflow-hidden shadow-lg border border-pink-100">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4592.189100779074!2d100.4847617113442!3d13.742302986592952!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e299001333832b%3A0xa183ef6bab621d6b!2sParanee%20Prestige%20Studio!5e1!3m2!1sen!2sth!4v1761239458359!5m2!1sen!2sth"
+      width="100%"
+      height="450"
+      style={{ border: 0 }}
+      allowFullScreen=""
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+      title="Google Map - Paranee Prestige Studio"
+      className="w-full h-[400px] md:h-[500px]"
+    ></iframe>
+  </div>
+</section>
+
 
       {/* ===== Contact ===== */}
       <section id="contact" className="bg-gray-900 text-white scroll-mt-24">
