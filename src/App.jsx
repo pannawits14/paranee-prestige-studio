@@ -76,6 +76,14 @@ const dict = {
 };
 
 export default function App() {
+  // === Phone reveal ===
+const PHONE = "0812345678"; // <-- แก้เป็นเบอร์จริงของร้าน
+const [showPhone, setShowPhone] = useState(false);
+const copyPhone = () => {
+  navigator.clipboard?.writeText(PHONE);
+  alert(`คัดลอกเบอร์: ${PHONE}`);
+};
+
   /* ===== Language ===== */
   const [lang, setLang] = useState("th");
   const t = useMemo(() => dict[lang], [lang]);
@@ -428,7 +436,7 @@ export default function App() {
           <div className="mt-6 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
             <a className="block text-center px-5 py-3 rounded-xl bg-white text-gray-900 font-semibold hover:opacity-90" href="https://line.me/R/ti/p/%40YOUR_LINE_ID" target="_blank" rel="noreferrer">LINE</a>
             <a className="block text-center px-5 py-3 rounded-xl bg-white text-gray-900 font-semibold hover:opacity-90" href="https://wa.me/YOUR_NUMBER" target="_blank" rel="noreferrer">WhatsApp</a>
-            <a className="block text-center px-5 py-3 rounded-xl bg-white text-gray-900 font-semibold hover:opacity-90" href="tel:+66XXXXXXXXX">{t.ctaCall}</a>
+            <a className="block text-center px-5 py-3 rounded-xl bg-white text-gray-900 font-semibold hover:opacity-90" href="tel:+66661093100">{t.ctaCall}</a>
           </div>
           <p className="mt-4 text-xs text-gray-400">* ใส่ LINE ID/เบอร์โทร/ลิงก์ WhatsApp ของร้านจริงภายหลัง</p>
         </div>
