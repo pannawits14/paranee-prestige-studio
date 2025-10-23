@@ -8,6 +8,8 @@ const dict = {
     heroTitle: "เช่าชุดไทย ถ่ายรูปสวย ใกล้วัดอรุณ",
     heroSubtitle:
       "บริการครบวงจร: เช่าชุดไทย แต่งหน้า-ทำผม และช่างภาพมืออาชีพ ราคากันเอง อุปกรณ์ครบ สะอาด คุณภาพดี",
+    ctaBook: "จองคิว / แชทเลย",
+    ctaCall: "โทรหาเรา",
     aboutTitle: "เกี่ยวกับเรา",
     aboutBody:
       'เราเป็นสตูดิโอเช่าชุดไทย แต่งหน้า และถ่ายภาพ ใกล้ "วัดอรุณ" ดูแลความสะอาดของชุด ซักทุกวัน พร้อมเครื่องประดับครบ',
@@ -41,6 +43,8 @@ const dict = {
     heroTitle: "Thai Costume Rental • Makeup • Photography",
     heroSubtitle:
       "All-in-one near Wat Arun: clean, high-quality costumes with full accessories, makeup & hair, and pro photographers at friendly prices.",
+    ctaBook: "Chat / Book Now",
+    ctaCall: "Call us",
     aboutTitle: "About Us",
     aboutBody:
       "Thai costume rental, makeup, and photography studio near Wat Arun. Costumes & accessories are cleaned daily and kept in top condition.",
