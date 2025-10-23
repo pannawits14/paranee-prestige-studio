@@ -236,7 +236,7 @@ export default function App() {
             </div>
             <div className="relative">
               <div className="rounded-3xl overflow-hidden shadow-xl">
-                <img alt="Thai costume near Wat Arun" className="w-full h-72 md:h-96 object-cover" src="/hero.jpg" />
+                <img alt="g99.jpg" className="w-full h-72 md:h-96 object-cover" src="/hero.jpg" />
               </div>
             </div>
           </div>
