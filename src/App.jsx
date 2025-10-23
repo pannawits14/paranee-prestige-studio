@@ -267,6 +267,7 @@ export default function App() {
               <h4 className="text-lg font-semibold">Makeup</h4>
               <p className="mt-2 text-gray-700">{t.makeup200}</p>
               <p className="text-gray-700">{t.makeup500}</p>
+              <p className="text-gray-700">{t.hair}</p>
             </div>
             <div className="p-6 rounded-2xl border bg-white shadow-sm">
               <h4 className="text-lg font-semibold">{t.photographerTitle}</h4>
