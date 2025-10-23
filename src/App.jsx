@@ -54,7 +54,7 @@ const dict = {
     baht: "THB",
     makeup200: "Basic makeup — 200 THB",
     makeup500: "Premium makeup — 500 THB",
-    hair: "Hair style start 50 — 50 THB",
+    hair: "Hairstyling starts at — 50 THB",
     photographerTitle: "Photography Service",
     photo12: "1–2 people — 1,500 THB",
     photo34: "3–4 people — 2,000 THB (+500 per next 2 people)",
